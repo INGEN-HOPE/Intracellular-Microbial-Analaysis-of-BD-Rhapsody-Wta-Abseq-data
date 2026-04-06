@@ -1,9 +1,9 @@
-# 1. Load libraries
+#Load libraries
 library(ggplot2)
 library(dplyr)
 library(tidyr)
 
-# 2. Data Preparation
+# Data Preparation
 df_raw <- data.frame(
   Phylum = c('Pseudomonadota', 'Actinomycetota', 'Bacillota', 'Mycoplasmatota', 
              'Peploviricota', 'Artverviricota', 'Unclassified', 'Campylobacterota', 
@@ -12,7 +12,6 @@ df_raw <- data.frame(
   PBMC = c(46.56, 8.78, 12.73, 9.33, 4.69, 3.89, 4.47, 1.49, 1.15, 1.01, 1.34, 1.03)
 )
 
-# 3. Reshape and Sort
 df_long <- df_raw %>%
   pivot_longer(cols = c(DHF, PBMC),
                names_to = "Condition",
@@ -24,61 +23,7 @@ df_long <- df_raw %>%
                        PBMC = "Healthy Control")
   )
 
-# 4. Create the Plot
-p = ggplot(df_long, aes(x = Phylum, y = Abundance, fill = Condition)) +
-  # Decreased bar width (width = 0.6) and dodge (width = 0.7)
-  geom_bar(stat = "identity", 
-           position = position_dodge(width = 0.7), 
-           width = 0.6) +
-  
-  # Add labels ONLY if Abundance is greater than 0
-  geom_text(aes(label = ifelse(Abundance > 0, paste0(Abundance, "%"), "")), 
-            position = position_dodge(width = 0.8), 
-            vjust = -0.6, 
-            size = 3.2, 
-            fontface = "bold", 
-            color = "#2C3E50") +
-  
-  # Colors
-  scale_fill_manual(values = c("Dengue Infected" = "#FF6B6B", "Healthy Control" = "#4ECDC4")) +
-  
-  # Refined Styling
-  theme_minimal(base_family = "sans") +
-  labs(
-    title = "Phylum Percent Relative Abundance",
-    x = NULL,
-    y = "Relative Abundance (%)",
-    fill = "Group"
-  ) +
-  theme(
-    plot.title = element_text(face = "bold", size = 14, color = "black"),
-    axis.text.x = element_text(angle = 40, hjust = 1, face = "italic", size = 16, color = "black"),
-    axis.text.y = element_text( size = 16, color = "black"),
-    axis.title.y = element_text(face = "bold", size = 14),
-    legend.position = "bottom",
-    panel.grid.major.x = element_blank(),
-    panel.grid.minor = element_blank(),
-    plot.background = element_rect(fill = "white", color = NA),
-    legend.text = element_text( size = 16, color = "black"),
-    legend.title = element_text( size = 16, color = "black")
-  ) +
-  # Added extra space at the top of the Y-axis for the labels
-  scale_y_continuous(expand = expansion(mult = c(0, 0.15)))
-
-
-svglite::svglite(
-  paste0("~/public_dengue_public/phylum_barplot.svg"),
-  width = 14, height = 8
-)
-print(p)
-dev.off()
-
-
-
-
-
-
-# 4. Create the Plot
+#visualise the plot
 p = ggplot(df_long, aes(x = Phylum, y = Abundance, fill = Condition)) +
   # Decreased bar width (width = 0.6) and dodge (width = 0.7)
   geom_bar(stat = "identity", 
